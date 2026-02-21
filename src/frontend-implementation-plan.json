@@ -1,37 +1,39 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove AMONGSTT token from whitelist",
+  "title": "Show only relevant wallet in token detail view",
   "requirements": [
     {
-      "id": "REQ-38",
-      "summary": "Remove AMONGSTT token entry from the DEFAULT_TOKENS array in frontend/src/lib/tokenConfig.ts, keeping the remaining 10 tokens intact",
+      "id": "REQ-40",
+      "summary": "Display only the wallet that holds the selected token in TokenMetrics view instead of showing both monitored wallets",
       "acceptanceCriteria": [
-        "AMONGSTT token is no longer present in DEFAULT_TOKENS array",
-        "All other 10 tokens remain in the whitelist unchanged",
-        "Token configuration loads correctly without AMONGSTT"
+        "When viewing token details, only the wallet that actually holds the token is displayed",
+        "The issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) is shown for tokens it issues",
+        "The dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) is shown when it holds the token",
+        "The unnecessary duplicate wallet display is completely removed from the view"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/tokenConfig.ts",
+          "path": "frontend/src/components/TokenMetrics.tsx",
           "operation": "modify",
-          "description": "Remove the AMONGSTT token object from the DEFAULT_TOKENS array while preserving all other 10 tokens (JewNomicaN, GreedyJEW, HEBROID, ASC, RPR, PLR, ARK, Schmeckles, MKS, TriForce, DeerChickenn) in their current order and configuration"
+          "description": "Filter the MONITORED_WALLETS array to show only wallets that hold the selected token with a non-zero balance. Add filtering logic before rendering the wallet sections that checks each wallet's trust lines for the selected token (matching both currency and issuer). Preserve the existing Layer 2 Trust Lines collapsible section functionality and wallet label logic (Vault for Schmeckles, Dev Hoard for others). Handle both standard and hex-encoded currency codes when matching trust lines."
         }
       ]
     },
     {
-      "id": "REQ-39",
-      "summary": "Verify that existing localStorage token configurations containing AMONGSTT are handled gracefully, allowing users who previously added AMONGSTT to continue seeing it until they manually remove it",
+      "id": "REQ-41",
+      "summary": "Implement filtering logic to determine which wallet is relevant for each token by checking trust line balances",
       "acceptanceCriteria": [
-        "Existing localStorage configurations with AMONGSTT continue to work",
-        "No errors occur when loading saved configurations that include AMONGSTT",
-        "Users can manually remove AMONGSTT through the token configuration interface if desired"
+        "The component checks trust line balances from both monitored wallets",
+        "Only wallets with non-zero balances for the selected token are displayed",
+        "If a token is issued by one wallet and held by the other, both relationships are correctly identified",
+        "The filtering logic handles both standard and hex-encoded currency codes"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/tokenConfig.ts",
+          "path": "frontend/src/components/TokenMetrics.tsx",
           "operation": "modify",
-          "description": "Review the loadTokenConfig and saveTokenConfig functions to ensure they handle localStorage data containing AMONGSTT gracefully without throwing errors or filtering it out, maintaining backward compatibility with existing user configurations"
+          "description": "Add a helper function that takes a wallet address, its trust lines, and the selected token, then returns whether the wallet is relevant by checking if any trust line matches the token's currency code (handling hex encoding) and issuer address, and has a non-zero balance. Use this function to filter MONITORED_WALLETS before rendering. Ensure the logic correctly identifies both issuer wallets and holder wallets for the selected token."
         }
       ]
     }

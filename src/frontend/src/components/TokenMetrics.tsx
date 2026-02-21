@@ -33,10 +33,28 @@ interface WalletTrustLines {
   trustLines: TrustLine[];
 }
 
-const WALLETS = [
+const MONITORED_WALLETS = [
   { address: 'rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4', name: 'GreedyJEW Issuer' },
   { address: 'rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx', name: 'Project Dev Wallet' }
 ];
+
+// Helper function to check if a wallet is relevant for the selected token
+function isWalletRelevantForToken(
+  trustLines: TrustLine[],
+  tokenCurrency: string,
+  tokenIssuer: string
+): boolean {
+  return trustLines.some(line => {
+    // Match currency (handle both standard and hex-encoded)
+    const currencyMatches = line.currency === tokenCurrency;
+    // Match issuer
+    const issuerMatches = line.account === tokenIssuer;
+    // Check for non-zero balance
+    const hasBalance = parseFloat(line.balance) !== 0;
+    
+    return currencyMatches && issuerMatches && hasBalance;
+  });
+}
 
 function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
   const [holdings, setHoldings] = useState<WalletHolding[]>([]);
@@ -59,7 +77,7 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
       const walletHoldings: WalletHolding[] = [];
       const errors: WalletError[] = [];
       
-      for (const wallet of WALLETS) {
+      for (const wallet of MONITORED_WALLETS) {
         if (!validateXRPLAddress(wallet.address)) {
           const errorMsg = `Invalid XRPL address format`;
           console.error(`[TokenMetrics] Invalid address for ${wallet.name}:`, wallet.address);
@@ -129,7 +147,7 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
       const allWalletTrustLines: WalletTrustLines[] = [];
       const errors: WalletError[] = [];
       
-      for (const wallet of WALLETS) {
+      for (const wallet of MONITORED_WALLETS) {
         if (!validateXRPLAddress(wallet.address)) {
           const errorMsg = `Invalid XRPL address format`;
           console.error(`[TokenMetrics] Invalid address for ${wallet.name}:`, wallet.address);
@@ -147,11 +165,17 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
           const lines = await fetchAccountLines(wallet.address);
           console.log(`[TokenMetrics] Retrieved ${lines.length} trust lines for ${wallet.name}`);
           
-          allWalletTrustLines.push({
-            address: wallet.address,
-            name: wallet.name,
-            trustLines: lines
-          });
+          // Only add wallet if it's relevant for the selected token
+          if (isWalletRelevantForToken(lines, token.currency, token.issuer)) {
+            console.log(`[TokenMetrics] ${wallet.name} is relevant for ${token.currency}`);
+            allWalletTrustLines.push({
+              address: wallet.address,
+              name: wallet.name,
+              trustLines: lines
+            });
+          } else {
+            console.log(`[TokenMetrics] ${wallet.name} is not relevant for ${token.currency} (no non-zero balance)`);
+          }
         } catch (walletError) {
           const errorMsg = walletError instanceof Error ? walletError.message : 'Unknown error';
           console.error(`[TokenMetrics] Failed to fetch trust lines for ${wallet.name}:`, walletError);
@@ -163,7 +187,7 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
         }
       }
       
-      console.log(`[TokenMetrics] Total wallets with trust lines: ${allWalletTrustLines.length}`);
+      console.log(`[TokenMetrics] Total wallets with relevant trust lines: ${allWalletTrustLines.length}`);
       setWalletTrustLines(allWalletTrustLines);
       setTrustLinesErrors(errors);
     } catch (err) {
@@ -466,7 +490,7 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
                                     <div className="flex items-start justify-between gap-3">
                                       <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                          <p className="font-semibold text-sm">
+                                          <p className="font-semibold text-sm truncate">
                                             {displayCurrency}
                                           </p>
                                           {isCurrentToken && (
@@ -479,18 +503,24 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
                                           Issuer: {line.account}
                                         </p>
                                         {line.currency.length === 40 && (
-                                          <p className="text-xs text-muted-foreground font-mono mt-1 truncate">
+                                          <p className="text-xs text-muted-foreground font-mono truncate mt-1">
                                             Hex: {line.currency}
                                           </p>
                                         )}
                                       </div>
-                                      <div className="text-right">
-                                        <p className="text-lg font-bold">
+                                      <div className="text-right flex-shrink-0">
+                                        <p className={`text-lg font-bold ${
+                                          balance > 0 ? 'text-success' : 
+                                          balance < 0 ? 'text-destructive' : 
+                                          'text-muted-foreground'
+                                        }`}>
                                           {balance.toFixed(2)}
                                         </p>
-                                        <p className="text-xs text-muted-foreground">
-                                          Balance
-                                        </p>
+                                        {line.limit && (
+                                          <p className="text-xs text-muted-foreground">
+                                            Limit: {parseFloat(line.limit).toFixed(0)}
+                                          </p>
+                                        )}
                                       </div>
                                     </div>
                                   </div>
@@ -505,20 +535,6 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
                 );
               })}
             </div>
-          )}
-
-          {trustLinesErrors.length > 0 && walletTrustLines.length > 0 && (
-            <Alert variant="destructive" className="mt-3">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                <p className="text-sm mb-1">Some wallets failed to load trust lines:</p>
-                <ul className="text-xs space-y-1">
-                  {trustLinesErrors.map((err, idx) => (
-                    <li key={idx}>• {err.wallet}: {err.error}</li>
-                  ))}
-                </ul>
-              </AlertDescription>
-            </Alert>
           )}
         </div>
       </CardContent>

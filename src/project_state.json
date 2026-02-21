@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 27,
+  "projectStateVersion": 29,
   "summary": "Multi-chain monitoring app for XRP Ledger projects tracking greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) with drill-down interface: token list → token metrics → wallet holdings (Xaman-style data) → NFT viewer tab, using XRPL native DEX data and public APIs",
   "architectural_notes": [
     "Use XRPL native DEX data and public APIs",
@@ -14,8 +14,10 @@
     "Fetch real-time XRP DEX order book prices for each monitored token to display current market trading prices",
     "Top right network switcher for XRPL/Xahau (Xahau functionality to be implemented later)"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Token detail 'View More' view shows both monitored wallets (greedyjew issuer + hebroid dev) for each token when only the relevant wallet should be displayed"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-debug-and-fix-the-data-fetching-functionality-so-the-dashboard-displays-wallet-data-for-greedyjew-and-hebroid-wallets-verify-xrpl-api-requests-are-executing-correctly-and-data-is-being-returned-from-the-public-ripple-server",
@@ -280,6 +282,22 @@
         "REQ-37"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-components-tokenmetrics-tsx-to-display-only-the-wallet-that-holds-the-selected-token-either-the-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-or-the-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx-instead-of-showing-both-monitored-wallets-when-viewing-token-details",
+      "title": "Update frontend/src/components/TokenMetrics.tsx to display only the wallet that holds the selected token (either the issuer wallet rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 or the dev wallet rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) instead of showing both monitored wallets when viewing token details",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-logic-in-frontend-src-components-tokenmetrics-tsx-to-determine-which-wallet-is-relevant-for-each-token-by-checking-which-wallet-holds-a-non-zero-balance-or-has-the-trust-line-for-the-selected-token",
+      "title": "Implement logic in frontend/src/components/TokenMetrics.tsx to determine which wallet is relevant for each token by checking which wallet holds a non-zero balance or has the trust line for the selected token",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -431,6 +449,12 @@
       "reqIds": [
         "REQ-39"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-30",
+      "summary": "Remove unnecessary duplicate wallet display in token detail 'View More' view - only show relevant wallet (issuer or dev) instead of displaying both greedyjew/hebroid wallets",
+      "reqIds": [],
       "status": "pending"
     }
   ],

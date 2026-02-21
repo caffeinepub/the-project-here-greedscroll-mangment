@@ -1,52 +1,53 @@
 {
   "kind": "build_request",
-  "title": "Remove AMONGSTT token from whitelist",
-  "projectName": "XRPL Token Monitor",
+  "title": "Show only relevant wallet in token detail view",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-38",
-      "text": "Remove AMONGSTT token entry from the DEFAULT_TOKENS array in frontend/src/lib/tokenConfig.ts, keeping the remaining 10 tokens (JewNomicaN, GreedyJEW, HEBROID, ASC, RPR, PLR, ARK, Schmeckles, MKS, TriForce, DeerChickenn) intact",
+      "id": "REQ-40",
+      "text": "Update frontend/src/components/TokenMetrics.tsx to display only the wallet that holds the selected token (either the issuer wallet rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 or the dev wallet rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) instead of showing both monitored wallets when viewing token details",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-last"
+          "msg-user-latest"
         ],
         "quotes": [
-          "remove Amongstt"
+          "each item tracked if i click view more will show both of the greedyew/hebroid source wallets which is unnecessary on those items"
         ]
       },
       "acceptanceCriteria": [
-        "AMONGSTT token is no longer present in DEFAULT_TOKENS array",
-        "All other 10 tokens remain in the whitelist unchanged",
-        "Token configuration loads correctly without AMONGSTT"
+        "When viewing token details, only the wallet that actually holds the token is displayed",
+        "The issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) is shown for tokens it issues",
+        "The dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) is shown when it holds the token",
+        "The unnecessary duplicate wallet display is completely removed from the view"
       ]
     },
     {
-      "id": "REQ-39",
-      "text": "Verify that any existing localStorage token configurations containing AMONGSTT are handled gracefully, allowing users who previously added AMONGSTT to continue seeing it until they manually remove it from their custom configuration",
+      "id": "REQ-41",
+      "text": "Implement logic in frontend/src/components/TokenMetrics.tsx to determine which wallet is relevant for each token by checking which wallet holds a non-zero balance or has the trust line for the selected token",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-last"
+          "msg-user-latest"
         ]
       },
       "acceptanceCriteria": [
-        "Existing localStorage configurations with AMONGSTT continue to work",
-        "No errors occur when loading saved configurations that include AMONGSTT",
-        "Users can manually remove AMONGSTT through the token configuration interface if desired"
+        "The component checks trust line balances from both monitored wallets",
+        "Only wallets with non-zero balances for the selected token are displayed",
+        "If a token is issued by one wallet and held by the other, both relationships are correctly identified",
+        "The filtering logic handles both standard and hex-encoded currency codes"
       ]
     }
   ],
   "constraints": [
-    "Do not modify any token entries other than AMONGSTT",
-    "Do not change the token configuration persistence logic",
-    "Maintain backward compatibility with existing localStorage data"
+    "Do not modify the existing getTrustLines function in frontend/src/lib/xrpl.ts",
+    "Preserve the Layer 2 Trust Lines collapsible section functionality",
+    "Maintain the existing wallet label logic (Vault for Schmeckles, Dev Hoard for others)"
   ],
   "nonGoals": [
-    "Forcing removal of AMONGSTT from user's custom token lists",
-    "Changing the arbitrage comparison logic or UI",
-    "Modifying any other token properties or issuer addresses"
+    "Changing the token whitelist configuration",
+    "Modifying how trust lines are fetched from XRPL",
+    "Altering the main token list view display"
   ],
   "imageRequirements": {
     "required": [],

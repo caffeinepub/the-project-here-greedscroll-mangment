@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Remove AMONGSTT token from the default whitelist while preserving user customizations.
+**Goal:** Display only the relevant wallet (either issuer or holder) in the token detail view instead of showing both monitored wallets.
 
 **Planned changes:**
-- Remove AMONGSTT token entry from DEFAULT_TOKENS array in frontend/src/lib/tokenConfig.ts
-- Maintain all other 10 tokens (JewNomicaN, GreedyJEW, HEBROID, ASC, RPR, PLR, ARK, Schmeckles, MKS, TriForce, DeerChickenn) unchanged
-- Ensure localStorage configurations containing AMONGSTT continue to work without errors
+- Update TokenMetrics.tsx to filter and show only the wallet that holds the selected token
+- Implement logic to determine wallet relevance by checking trust line balances for the token
+- Remove duplicate wallet displays when viewing token details
 
-**User-visible outcome:** AMONGSTT no longer appears in the default token list for new users, while existing users who added AMONGSTT can still see it until they manually remove it.
+**User-visible outcome:** When clicking "view more" on a token, users will see only the wallet that actually holds or issues that specific token, eliminating the unnecessary display of both monitored wallets.

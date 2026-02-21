@@ -1,4 +1,43 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-update-frontend-src-components-tokenmetrics-tsx-to-display-only-the-wallet-that-holds-the-selected-token-either-the-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-or-the-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx-instead-of-showing-both-monitored-wallets-when-viewing-token-details",
+      "featureTitle": "Update frontend/src/components/TokenMetrics.tsx to display only the wallet that holds the selected token (either the issuer wallet rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 or the dev wallet rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) instead of showing both monitored wallets when viewing token details",
+      "files": [
+        "frontend/src/components/TokenMetrics.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-40"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-logic-in-frontend-src-components-tokenmetrics-tsx-to-determine-which-wallet-is-relevant-for-each-token-by-checking-which-wallet-holds-a-non-zero-balance-or-has-the-trust-line-for-the-selected-token",
+      "featureTitle": "Implement logic in frontend/src/components/TokenMetrics.tsx to determine which wallet is relevant for each token by checking which wallet holds a non-zero balance or has the trust line for the selected token",
+      "files": [
+        "frontend/src/components/TokenMetrics.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-41"
+      ],
+      "confidence": "high"
+    }
+  ]
 }
