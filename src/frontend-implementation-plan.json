@@ -1,82 +1,37 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add token whitelist configuration interface",
+  "title": "Remove AMONGSTT token from whitelist",
   "requirements": [
     {
-      "id": "REQ-13",
-      "summary": "Create a token configuration interface that allows users to add, edit, and remove tokens from the monitoring list with persistence",
+      "id": "REQ-38",
+      "summary": "Remove AMONGSTT token entry from the DEFAULT_TOKENS array in frontend/src/lib/tokenConfig.ts, keeping the remaining 10 tokens intact",
       "acceptanceCriteria": [
-        "User can add new tokens by entering currency code and issuer address",
-        "User can remove tokens from the monitoring list",
-        "User can edit existing token entries",
-        "Configuration persists between sessions",
-        "Invalid XRPL addresses are rejected with clear error messages"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/lib/tokenConfig.ts",
-          "operation": "create",
-          "description": "Create a token configuration management module that provides functions to load, save, add, edit, and remove token configurations from localStorage. Include TypeScript interfaces for TokenConfig (currency, issuer, customName optional) and validation functions for XRPL addresses. Use the address validation logic from frontend/src/lib/xrpl.ts to ensure issuer addresses are valid."
-        },
-        {
-          "path": "frontend/src/components/TokenConfigDialog.tsx",
-          "operation": "create",
-          "description": "Create a dialog component using shadcn/ui Dialog, Input, Button, and Label components for token configuration management. Include a table or list showing configured tokens with edit and delete actions. Provide a form section to add new tokens with currency code and issuer address inputs. Validate issuer addresses using the validation function from tokenConfig.ts and display clear error messages for invalid addresses. Include save and cancel buttons that close the dialog."
-        },
-        {
-          "path": "frontend/src/pages/Dashboard.tsx",
-          "operation": "modify",
-          "description": "Add a settings button in the dashboard header or navigation area that opens the TokenConfigDialog. Import and include the TokenConfigDialog component with state management to control its open/closed state. Ensure the button is visible and accessible from the main dashboard view."
-        }
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "summary": "Update TokenList component to filter trust line data based on user-configured token whitelist",
-      "acceptanceCriteria": [
-        "Only whitelisted tokens appear in the token list",
-        "Trust lines not matching the whitelist are excluded from display",
-        "Empty state shown when no whitelisted tokens are found",
-        "Filter applies to both issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx)"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/TokenList.tsx",
-          "operation": "modify",
-          "description": "Import token configuration loading function from frontend/src/lib/tokenConfig.ts. Load the token whitelist configuration at component mount or using React state/effect. Filter the trust line data fetched from both monitored wallets (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 and rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) to include only tokens matching currency codes and issuer addresses from the whitelist. Display an empty state message with guidance when no whitelisted tokens are found in the trust lines."
-        }
-      ]
-    },
-    {
-      "id": "REQ-15",
-      "summary": "Pre-populate token configuration with GreedyJEW and Jewnomican as default monitored tokens",
-      "acceptanceCriteria": [
-        "GreedyJEW token with issuer rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 appears in default configuration",
-        "Jewnomican token with issuer rEz5RdLqRex7YxYZ1bEskCDHbvKy3zcUnq appears in default configuration",
-        "User can modify or remove these default entries"
+        "AMONGSTT token is no longer present in DEFAULT_TOKENS array",
+        "All other 10 tokens remain in the whitelist unchanged",
+        "Token configuration loads correctly without AMONGSTT"
       ],
       "file_operations": [
         {
           "path": "frontend/src/lib/tokenConfig.ts",
           "operation": "modify",
-          "description": "Define a default token configuration array containing GreedyJEW (issuer rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and Jewnomican (issuer rEz5RdLqRex7YxYZ1bEskCDHbvKy3zcUnq). In the load configuration function, check if localStorage is empty on first access and initialize it with these default tokens. Note: currency codes will need to be determined from XRPL trust line data for these issuers; include placeholder logic or comments to fetch and populate currency codes from actual trust line queries."
+          "description": "Remove the AMONGSTT token object from the DEFAULT_TOKENS array while preserving all other 10 tokens (JewNomicaN, GreedyJEW, HEBROID, ASC, RPR, PLR, ARK, Schmeckles, MKS, TriForce, DeerChickenn) in their current order and configuration"
         }
       ]
     },
     {
-      "id": "REQ-16",
-      "summary": "Add navigation option to access token configuration interface from main dashboard",
+      "id": "REQ-39",
+      "summary": "Verify that existing localStorage token configurations containing AMONGSTT are handled gracefully, allowing users who previously added AMONGSTT to continue seeing it until they manually remove it",
       "acceptanceCriteria": [
-        "Settings button or menu item is visible on the dashboard",
-        "Clicking the button opens the token configuration interface",
-        "User can return to the main dashboard view after configuring tokens"
+        "Existing localStorage configurations with AMONGSTT continue to work",
+        "No errors occur when loading saved configurations that include AMONGSTT",
+        "Users can manually remove AMONGSTT through the token configuration interface if desired"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Dashboard.tsx",
+          "path": "frontend/src/lib/tokenConfig.ts",
           "operation": "modify",
-          "description": "Add a settings or configuration button in the dashboard UI (header, toolbar, or side navigation) that triggers the TokenConfigDialog to open. Use shadcn/ui Button component with an appropriate icon (Settings or Gear icon). Ensure the button is clearly labeled and positioned for easy access. The dialog's close action returns the user to the dashboard view automatically."
+          "description": "Review the loadTokenConfig and saveTokenConfig functions to ensure they handle localStorage data containing AMONGSTT gracefully without throwing errors or filtering it out, maintaining backward compatibility with existing user configurations"
         }
       ]
     }

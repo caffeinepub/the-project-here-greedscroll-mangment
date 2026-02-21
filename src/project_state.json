@@ -1,18 +1,21 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 13,
+  "projectStateVersion": 27,
   "summary": "Multi-chain monitoring app for XRP Ledger projects tracking greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) with drill-down interface: token list → token metrics → wallet holdings (Xaman-style data) → NFT viewer tab, using XRPL native DEX data and public APIs",
   "architectural_notes": [
     "Use XRPL native DEX data and public APIs",
-    "Match Xaman wallet data display format",
     "Multi-chain monitoring architecture for XRP Ledger projects",
     "Monitor two wallets: issuer wallet rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 (GreedyJEW token issuer) and dev wallet rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx (project development wallet)",
-    "Filter displayed tokens to only those explicitly configured in whitelist, not all trust lines from monitored wallets"
+    "Filter displayed tokens to only those explicitly configured in whitelist, not all trust lines from monitored wallets",
+    "Split-screen layout: 50/50 split with token monitoring (left) and personal wallet view (right)",
+    "Fetch real-time XRP DEX order book prices for each monitored token to display current market trading prices",
+    "Top right network switcher for XRPL/Xahau (Xahau functionality to be implemented later)",
+    "Implement 50/50 split-screen layout: token monitoring (left) and personal wallet view (right)",
+    "Fetch real-time XRP DEX order book prices for each monitored token to display current market trading prices",
+    "Top right network switcher for XRPL/Xahau (Xahau functionality to be implemented later)"
   ],
-  "known_issues": [
-    "Dashboard currently shows all 210+ trust lines from monitored wallets instead of just the specific tokens user wants to track"
-  ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
       "id": "feature-debug-and-fix-the-data-fetching-functionality-so-the-dashboard-displays-wallet-data-for-greedyjew-and-hebroid-wallets-verify-xrpl-api-requests-are-executing-correctly-and-data-is-being-returned-from-the-public-ripple-server",
@@ -133,6 +136,150 @@
         "REQ-16"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-plr-pylons-token-to-the-default-token-whitelist-in-frontend-src-lib-tokenconfig-ts-with-currency-code-plr-and-issuer-address-rnsyhwlhuhvmurwwbjpbkzmspsyg5qek17",
+      "title": "Add PLR (Pylons) token to the default token whitelist in frontend/src/lib/tokenConfig.ts with currency code 'PLR' and issuer address 'rNSYhWLhuHvmURwWbJPBKZMSPsyG5Qek17'",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-schmeckles-token-to-the-default-token-whitelist-in-frontend-src-lib-tokenconfig-ts-with-issuer-address-rpxw83zp6thv7kmg5dpaw4cdw55dzrz9wu-and-currency-code-to-be-determined-from-xrpl-trust-line-data",
+      "title": "Add Schmeckles token to the default token whitelist in frontend/src/lib/tokenConfig.ts with issuer address 'rPxw83ZP6thv7KmG5DpAW4cDW55DZRZ9wu' and currency code to be determined from XRPL trust line data",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-the-whitelist-filtering-logic-in-frontend-src-components-tokenlist-tsx-to-identify-why-trust-line-data-from-the-monitored-wallets-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx-is-not-matching-against-the-configured-token-whitelist-containing-greedyjew-hebroid-asc-rpr-plr-ark-schmeckles-mks-and-triforce-tokens",
+      "title": "Debug the whitelist filtering logic in frontend/src/components/TokenList.tsx to identify why trust line data from the monitored wallets (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 and rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) is not matching against the configured token whitelist containing GreedyJEW, HEBROID, ASC, RPR, PLR, ARK, Schmeckles, MKS, and TriForce tokens",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-currency-code-and-issuer-address-matching-logic-in-frontend-src-components-tokenlist-tsx-to-correctly-filter-xrpl-trust-lines-against-the-token-whitelist-handling-both-standard-currency-codes-3-character-ascii-and-non-standard-currency-codes-40-character-hex-strings",
+      "title": "Fix the currency code and issuer address matching logic in frontend/src/components/TokenList.tsx to correctly filter XRPL trust lines against the token whitelist, handling both standard currency codes (3-character ASCII) and non-standard currency codes (40-character hex strings)",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-detailed-console-logging-to-frontend-src-lib-tokenconfig-ts-getwhitelistedtokens-function-to-verify-the-whitelist-is-being-loaded-correctly-from-localstorage-and-contains-all-9-expected-tokens-with-their-currency-codes-and-issuer-addresses",
+      "title": "Add detailed console logging to frontend/src/lib/tokenConfig.ts getWhitelistedTokens() function to verify the whitelist is being loaded correctly from localStorage and contains all 9 expected tokens with their currency codes and issuer addresses",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-currency-codes-stored-in-frontend-src-lib-tokenconfig-ts-for-greedyjew-hebroid-schmeckles-mks-and-triforce-match-the-actual-currency-codes-returned-in-xrpl-trust-line-data-which-may-be-hex-encoded-non-standard-codes-and-update-them-if-necessary-to-ensure-matching",
+      "title": "Verify that the currency codes stored in frontend/src/lib/tokenConfig.ts for GreedyJEW, HEBROID, Schmeckles, MKS, and TriForce match the actual currency codes returned in XRPL trust line data (which may be hex-encoded non-standard codes), and update them if necessary to ensure matching",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-currency-codes-in-frontend-src-lib-tokenconfig-ts-default-tokens-array-exactly-match-the-currency-codes-returned-in-the-xrpl-trust-line-responses-for-all-10-tokens-and-update-any-mismatched-currency-codes-to-use-the-correct-hex-encoded-or-ascii-format-as-returned-by-the-xrpl-api",
+      "title": "Verify that the currency codes in frontend/src/lib/tokenConfig.ts DEFAULT_TOKENS array exactly match the currency codes returned in the XRPL trust line responses for all 10 tokens, and update any mismatched currency codes to use the correct hex-encoded or ASCII format as returned by the XRPL API",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-components-tokenmetrics-tsx-to-fetch-and-display-all-trust-lines-layer-2-tokens-held-by-the-selected-wallet-when-viewing-token-details-in-addition-to-the-currently-displayed-token-holdings-breakdown",
+      "title": "Update frontend/src/components/TokenMetrics.tsx to fetch and display all trust lines (layer 2 tokens) held by the selected wallet when viewing token details, in addition to the currently displayed token holdings breakdown",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-collapsible-or-expandable-section-in-frontend-src-components-tokenmetrics-tsx-labeled-layer-2-trust-lines-that-displays-underneath-the-current-wallet-holdings-breakdown",
+      "title": "Add a collapsible or expandable section in frontend/src/components/TokenMetrics.tsx labeled 'Layer 2 Trust Lines' that displays underneath the current wallet holdings breakdown",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-frontend-src-components-tokenmetrics-tsx-uses-the-existing-gettrustlines-function-from-frontend-src-lib-xrpl-ts-to-fetch-all-trust-lines-for-each-monitored-wallet-address",
+      "title": "Ensure frontend/src/components/TokenMetrics.tsx uses the existing getTrustLines function from frontend/src/lib/xrpl.ts to fetch all trust lines for each monitored wallet address",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-flip-switch-toggle-in-the-top-right-corner-of-the-dashboard-header-frontend-src-components-header-tsx-that-allows-switching-between-xrpl-and-xahau-networks-with-visual-indication-of-which-network-is-currently-selected",
+      "title": "Add a flip switch toggle in the top right corner of the dashboard header (frontend/src/components/Header.tsx) that allows switching between XRPL and Xahau networks, with visual indication of which network is currently selected",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-localstorage-persistence-for-the-last-selected-personal-wallet-in-the-right-side-wallet-area-automatically-restoring-the-previously-selected-wallet-when-the-user-reopens-the-application",
+      "title": "Implement localStorage persistence for the last selected personal wallet in the right-side wallet area, automatically restoring the previously selected wallet when the user reopens the application",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-50-50-split-screen-layout-on-the-main-dashboard-with-monitored-project-tokens-and-dex-prices-on-the-left-side-and-personal-wallet-holdings-on-the-right-side",
+      "title": "Implement a 50/50 split-screen layout on the main dashboard with monitored project tokens and DEX prices on the left side, and personal wallet holdings on the right side",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-personal-wallet-selector-and-holdings-display-component-for-the-right-side-of-the-dashboard-that-shows-the-selected-wallet-s-xrp-balance-token-balances-and-trust-lines-from-the-user-s-list-of-added-wallets",
+      "title": "Create a personal wallet selector and holdings display component for the right side of the dashboard that shows the selected wallet's XRP balance, token balances, and trust lines from the user's list of added wallets",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-wallet-balance-information-on-the-main-token-list-left-side-with-xrp-paired-dex-trading-prices-for-each-monitored-token-displayed-in-xaman-dex-price-format-showing-the-current-market-price-from-xrpl-dex-order-books",
+      "title": "Replace wallet balance information on the main token list (left side) with XRP-paired DEX trading prices for each monitored token, displayed in Xaman DEX price format, showing the current market price from XRPL DEX order books",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-24-hour-price-change-percentage-display-for-each-token-on-the-left-side-dashboard-to-enable-quick-arbitrage-opportunity-scanning",
+      "title": "Add 24-hour price change percentage display for each token on the left side dashboard to enable quick arbitrage opportunity scanning",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-dev-wallet-label-display-logic-to-show-vault-specifically-when-viewing-schmeckles-token-data-while-keeping-dev-hoard-as-the-default-label-for-all-other-tokens",
+      "title": "Update the dev wallet label display logic to show 'Vault' specifically when viewing Schmeckles token data, while keeping 'Dev Hoard' as the default label for all other tokens",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-wallet-management-interface-that-allows-users-to-add-edit-and-remove-personal-wallet-addresses-for-monitoring-with-the-list-stored-in-localstorage",
+      "title": "Create a wallet management interface that allows users to add, edit, and remove personal wallet addresses for monitoring, with the list stored in localStorage",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -178,6 +325,112 @@
       "id": "AR-7",
       "summary": "Add token whitelist/configuration interface to specify which tokens to monitor instead of displaying all trust lines",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Debug and fix the token whitelist filtering logic in frontend/src/components/TokenList.tsx to correctly match all 10 configured tokens (GreedyJEW, JewNomicaN, HEBROID, ASC, RPR, PLR, ARK, Schmeckles, MKS, TriForce, DeerChickenn) against the XRPL trust line data returned from wallets rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 and rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Add comprehensive debug logging to frontend/src/components/TokenList.tsx filterTrustLinesByWhitelist function that logs: (1) the complete whitelist array with all currency codes and issuer addresses, (2) each raw trust line object before filtering with its currency and issuer values, (3) the comparison logic results showing whether each trust line matched or failed to match against whitelist entries, and (4) the final filtered trust lines count",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Update the currency code matching logic in frontend/src/components/TokenList.tsx to support flexible matching that compares both hex-encoded and ASCII-decoded versions of currency codes, ensuring that tokens like 'GreedyJEW' match whether the XRPL returns the currency as ASCII or as a 40-character hex string",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "When clicking 'View More' on a token detail page, display the wallet's projects layer 2 trust lines as well as token balances",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Display 24h price change percentage for each token on the left side dashboard for arbitrage opportunity scanning",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Replace wallet balance display with XRP DEX trading prices on main dashboard token list (left side), matching Xaman DEX price format",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Add network switcher (XRPL/Xahau) flip switch in top right corner of dashboard",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Remember last selected personal wallet on app reload using localStorage",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Change dev wallet label to 'Vault' specifically for Schmeckles token, keep 'Dev Hoard' as default for other tokens",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Create personal wallet selector and holdings display component for the right side of the dashboard showing selected wallet's XRP balance, token balances, and trust lines from user's list of added wallets",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Implement 50/50 split-screen layout on main dashboard with monitored project tokens and DEX prices on left side, and personal wallet holdings on right side",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Create wallet management interface that allows users to add, edit, and remove personal wallet addresses for monitoring, with the list stored in localStorage",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Add placeholder AI chatbot bubble popup interface (non-functional) that will later provide arbitrage opportunity suggestions",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Remove AMONGSTT from the token whitelist and arbitrage comparison group",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Remove AMONGSTT token entry from the DEFAULT_TOKENS array in frontend/src/lib/tokenConfig.ts, keeping the remaining 10 tokens (JewNomicaN, GreedyJEW, HEBROID, ASC, RPR, PLR, ARK, Schmeckles, MKS, TriForce, DeerChickenn) intact",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-29",
+      "summary": "Verify that any existing localStorage token configurations containing AMONGSTT are handled gracefully, allowing users who previously added AMONGSTT to continue seeing it until they manually remove it from their custom configuration",
+      "reqIds": [
+        "REQ-39"
+      ],
       "status": "pending"
     }
   ],

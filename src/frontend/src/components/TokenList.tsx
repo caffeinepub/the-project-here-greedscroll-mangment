@@ -7,7 +7,7 @@ import { AlertCircle, TrendingUp, Coins, AlertTriangle, RefreshCw } from 'lucide
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Token } from '@/pages/Dashboard';
 import { fetchAccountLines, validateXRPLAddress } from '@/lib/xrpl';
-import { loadTokenConfig, isTokenWhitelisted } from '@/lib/tokenConfig';
+import { loadTokenConfig, isTokenWhitelisted, hexToString } from '@/lib/tokenConfig';
 
 interface TokenListProps {
   onTokenSelect: (token: Token) => void;
@@ -31,6 +31,7 @@ function TokenList({ onTokenSelect, refreshTrigger }: TokenListProps) {
   const [walletErrors, setWalletErrors] = useState<WalletError[]>([]);
 
   const loadTokens = async () => {
+    console.log('[TokenList] ========================================');
     console.log('[TokenList] Starting to load tokens from wallets:', WALLETS);
     
     try {
@@ -39,7 +40,17 @@ function TokenList({ onTokenSelect, refreshTrigger }: TokenListProps) {
       
       // Load token whitelist
       const tokenConfig = loadTokenConfig();
-      console.log('[TokenList] Loaded token whitelist:', tokenConfig);
+      console.log('[TokenList] ========================================');
+      console.log('[TokenList] Loaded token whitelist configuration:');
+      console.log('[TokenList] Total tokens in whitelist:', tokenConfig.length);
+      tokenConfig.forEach((token, idx) => {
+        console.log(`[TokenList] Whitelist[${idx}]:`, {
+          currency: token.currency,
+          issuer: token.issuer,
+          customName: token.customName
+        });
+      });
+      console.log('[TokenList] ========================================');
       
       const allTokens: Token[] = [];
       const errors: WalletError[] = [];
@@ -63,30 +74,79 @@ function TokenList({ onTokenSelect, refreshTrigger }: TokenListProps) {
           continue; // Skip invalid addresses
         }
         
+        console.log(`[TokenList] ========================================`);
         console.log(`[TokenList] Fetching trust lines for ${wallet.name} (${wallet.address})`);
         
         try {
           const lines = await fetchAccountLines(wallet.address);
           console.log(`[TokenList] Retrieved ${lines.length} trust lines for ${wallet.name}`);
+          console.log(`[TokenList] Raw trust line data from XRPL API:`);
+          
+          // Log each trust line in detail
+          lines.forEach((line, idx) => {
+            console.log(`[TokenList] Trust Line [${idx}]:`, {
+              currency: line.currency,
+              currencyType: typeof line.currency,
+              currencyLength: line.currency.length,
+              isHex: /^[0-9A-F]{40}$/i.test(line.currency),
+              account: line.account,
+              balance: line.balance,
+              limit: line.limit
+            });
+            
+            // Try to decode if it's hex
+            if (line.currency.length === 40 && /^[0-9A-F]{40}$/i.test(line.currency)) {
+              const decoded = hexToString(line.currency);
+              console.log(`[TokenList]   -> Hex decoded: "${decoded}"`);
+            }
+          });
+          
+          console.log(`[TokenList] ========================================`);
+          console.log(`[TokenList] Starting whitelist filtering for ${wallet.name}...`);
           
           // Filter trust lines based on whitelist
           const filteredLines = lines.filter(line => {
-            const isWhitelisted = isTokenWhitelisted(line.currency, line.account);
+            const currencyToCheck = line.currency;
+            const issuerToCheck = line.account;
+            
+            console.log(`[TokenList] Checking trust line:`, {
+              currency: currencyToCheck,
+              issuer: issuerToCheck
+            });
+            
+            const isWhitelisted = isTokenWhitelisted(currencyToCheck, issuerToCheck);
+            
+            console.log(`[TokenList]   -> Whitelisted: ${isWhitelisted}`);
+            
             if (!isWhitelisted) {
-              console.log(`[TokenList] Filtering out non-whitelisted token: ${line.currency} (${line.account})`);
+              console.log(`[TokenList]   -> FILTERED OUT (not in whitelist)`);
+            } else {
+              console.log(`[TokenList]   -> ✓ MATCHED - Including in results`);
             }
+            
             return isWhitelisted;
           });
           
-          console.log(`[TokenList] ${filteredLines.length} tokens match whitelist for ${wallet.name}`);
+          console.log(`[TokenList] ========================================`);
+          console.log(`[TokenList] Filtering complete for ${wallet.name}:`);
+          console.log(`[TokenList]   Total trust lines: ${lines.length}`);
+          console.log(`[TokenList]   Whitelisted tokens: ${filteredLines.length}`);
           
-          const tokensWithAccount: Token[] = filteredLines.map(line => ({
-            currency: line.currency,
-            issuer: line.account, // The 'account' field in trust line is the issuer
-            balance: line.balance,
-            limit: line.limit,
-            account: wallet.name
-          }));
+          const tokensWithAccount: Token[] = filteredLines.map(line => {
+            // Decode hex currency codes for display
+            let displayCurrency = line.currency;
+            if (line.currency.length === 40 && /^[0-9A-F]{40}$/i.test(line.currency)) {
+              displayCurrency = hexToString(line.currency);
+            }
+            
+            return {
+              currency: displayCurrency,
+              issuer: line.account, // The 'account' field in trust line is the issuer
+              balance: line.balance,
+              limit: line.limit,
+              account: wallet.name
+            };
+          });
           
           allTokens.push(...tokensWithAccount);
         } catch (walletError) {
@@ -100,7 +160,12 @@ function TokenList({ onTokenSelect, refreshTrigger }: TokenListProps) {
         }
       }
       
+      console.log(`[TokenList] ========================================`);
+      console.log(`[TokenList] FINAL RESULTS:`);
       console.log(`[TokenList] Total whitelisted tokens loaded: ${allTokens.length}`);
+      console.log(`[TokenList] Errors encountered: ${errors.length}`);
+      console.log(`[TokenList] ========================================`);
+      
       setTokens(allTokens);
       setWalletErrors(errors);
     } catch (err) {
@@ -251,6 +316,7 @@ function TokenList({ onTokenSelect, refreshTrigger }: TokenListProps) {
                   <li>Click the Settings button in the header to manage your token whitelist</li>
                   <li>Add the currency codes and issuer addresses of tokens you want to monitor</li>
                   <li>Make sure the tokens have trust lines set up in the monitored wallets</li>
+                  <li>Check the browser console (F12) for detailed debugging information</li>
                 </ul>
               </div>
             </AlertDescription>

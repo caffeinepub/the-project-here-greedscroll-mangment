@@ -3,10 +3,12 @@ import { CardContent, CardHeader, CardTitle, CardDescription } from '@/component
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Wallet, TrendingUp, Users, RefreshCw } from 'lucide-react';
+import { AlertCircle, Wallet, TrendingUp, Users, RefreshCw, ChevronDown, ChevronUp, Layers } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Token } from '@/pages/Dashboard';
-import { fetchAccountLines, validateXRPLAddress } from '@/lib/xrpl';
+import { fetchAccountLines, validateXRPLAddress, TrustLine } from '@/lib/xrpl';
+import { hexToString } from '@/lib/tokenConfig';
 
 interface TokenMetricsProps {
   token: Token;
@@ -25,6 +27,12 @@ interface WalletError {
   error: string;
 }
 
+interface WalletTrustLines {
+  address: string;
+  name: string;
+  trustLines: TrustLine[];
+}
+
 const WALLETS = [
   { address: 'rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4', name: 'GreedyJEW Issuer' },
   { address: 'rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx', name: 'Project Dev Wallet' }
@@ -34,6 +42,12 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
   const [holdings, setHoldings] = useState<WalletHolding[]>([]);
   const [loading, setLoading] = useState(true);
   const [walletErrors, setWalletErrors] = useState<WalletError[]>([]);
+  
+  // New state for trust lines
+  const [walletTrustLines, setWalletTrustLines] = useState<WalletTrustLines[]>([]);
+  const [trustLinesLoading, setTrustLinesLoading] = useState(false);
+  const [trustLinesErrors, setTrustLinesErrors] = useState<WalletError[]>([]);
+  const [expandedWallets, setExpandedWallets] = useState<Set<string>>(new Set());
 
   const loadHoldings = async () => {
     console.log(`[TokenMetrics] Loading holdings for token: ${token.currency} (${token.issuer})`);
@@ -105,9 +119,82 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
     }
   };
 
+  const loadTrustLines = async () => {
+    console.log(`[TokenMetrics] Loading all trust lines for monitored wallets`);
+    
+    try {
+      setTrustLinesLoading(true);
+      setTrustLinesErrors([]);
+      
+      const allWalletTrustLines: WalletTrustLines[] = [];
+      const errors: WalletError[] = [];
+      
+      for (const wallet of WALLETS) {
+        if (!validateXRPLAddress(wallet.address)) {
+          const errorMsg = `Invalid XRPL address format`;
+          console.error(`[TokenMetrics] Invalid address for ${wallet.name}:`, wallet.address);
+          errors.push({
+            wallet: wallet.name,
+            address: wallet.address,
+            error: errorMsg
+          });
+          continue;
+        }
+        
+        console.log(`[TokenMetrics] Fetching all trust lines for ${wallet.name}`);
+        
+        try {
+          const lines = await fetchAccountLines(wallet.address);
+          console.log(`[TokenMetrics] Retrieved ${lines.length} trust lines for ${wallet.name}`);
+          
+          allWalletTrustLines.push({
+            address: wallet.address,
+            name: wallet.name,
+            trustLines: lines
+          });
+        } catch (walletError) {
+          const errorMsg = walletError instanceof Error ? walletError.message : 'Unknown error';
+          console.error(`[TokenMetrics] Failed to fetch trust lines for ${wallet.name}:`, walletError);
+          errors.push({
+            wallet: wallet.name,
+            address: wallet.address,
+            error: errorMsg
+          });
+        }
+      }
+      
+      console.log(`[TokenMetrics] Total wallets with trust lines: ${allWalletTrustLines.length}`);
+      setWalletTrustLines(allWalletTrustLines);
+      setTrustLinesErrors(errors);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to load trust lines';
+      console.error('[TokenMetrics] Error loading trust lines:', err);
+      setTrustLinesErrors([{
+        wallet: 'System',
+        address: 'N/A',
+        error: errorMsg
+      }]);
+    } finally {
+      setTrustLinesLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadHoldings();
+    loadTrustLines();
   }, [token]);
+
+  const toggleWalletExpanded = (address: string) => {
+    setExpandedWallets(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(address)) {
+        newSet.delete(address);
+      } else {
+        newSet.add(address);
+      }
+      return newSet;
+    });
+  };
 
   const totalBalance = holdings.reduce((sum, h) => sum + parseFloat(h.balance), 0);
 
@@ -158,7 +245,10 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
               </div>
               
               <Button 
-                onClick={loadHoldings} 
+                onClick={() => {
+                  loadHoldings();
+                  loadTrustLines();
+                }} 
                 variant="outline" 
                 size="sm"
                 className="mt-3"
@@ -202,7 +292,10 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
                 ))}
               </ul>
               <Button 
-                onClick={loadHoldings} 
+                onClick={() => {
+                  loadHoldings();
+                  loadTrustLines();
+                }} 
                 variant="outline" 
                 size="sm"
                 className="mt-2"
@@ -225,7 +318,7 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
           </p>
         </div>
 
-        <div>
+        <div className="mb-6">
           <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-3">
             Wallet Breakdown
           </h3>
@@ -265,6 +358,167 @@ function TokenMetrics({ token, onWalletSelect }: TokenMetricsProps) {
                 </button>
               ))}
             </div>
+          )}
+        </div>
+
+        {/* Layer 2 Trust Lines Section */}
+        <div className="mt-8 pt-6 border-t border-border/50">
+          <div className="flex items-center gap-2 mb-4">
+            <Layers className="h-5 w-5 text-chart-3" />
+            <h3 className="font-semibold text-lg">Layer 2 Trust Lines</h3>
+          </div>
+
+          {trustLinesLoading ? (
+            <div className="space-y-3">
+              {[1, 2].map((i) => (
+                <Skeleton key={i} className="h-32 w-full" />
+              ))}
+            </div>
+          ) : trustLinesErrors.length > 0 && walletTrustLines.length === 0 ? (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error Loading Trust Lines</AlertTitle>
+              <AlertDescription>
+                <p className="text-sm mb-2">Failed to load trust lines:</p>
+                <ul className="text-xs space-y-1">
+                  {trustLinesErrors.map((err, idx) => (
+                    <li key={idx}>• {err.wallet}: {err.error}</li>
+                  ))}
+                </ul>
+                <Button 
+                  onClick={loadTrustLines} 
+                  variant="outline" 
+                  size="sm"
+                  className="mt-2"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Retry
+                </Button>
+              </AlertDescription>
+            </Alert>
+          ) : walletTrustLines.length === 0 ? (
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                No trust lines found for the monitored wallets.
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div className="space-y-3">
+              {walletTrustLines.map((walletData) => {
+                const isExpanded = expandedWallets.has(walletData.address);
+                
+                return (
+                  <Collapsible
+                    key={walletData.address}
+                    open={isExpanded}
+                    onOpenChange={() => toggleWalletExpanded(walletData.address)}
+                  >
+                    <div className="rounded-lg border border-border/50 overflow-hidden">
+                      <CollapsibleTrigger className="w-full p-4 hover:bg-accent/30 transition-colors">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Wallet className="h-4 w-4 text-chart-3" />
+                            <div className="text-left">
+                              <p className="font-semibold">{walletData.name}</p>
+                              <p className="text-xs text-muted-foreground font-mono">
+                                {walletData.address}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Badge variant="secondary" className="text-xs">
+                              {walletData.trustLines.length} Trust Lines
+                            </Badge>
+                            {isExpanded ? (
+                              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                      </CollapsibleTrigger>
+                      
+                      <CollapsibleContent>
+                        <div className="border-t border-border/50 bg-muted/20">
+                          {walletData.trustLines.length === 0 ? (
+                            <div className="p-4 text-sm text-muted-foreground text-center">
+                              No trust lines found
+                            </div>
+                          ) : (
+                            <div className="divide-y divide-border/30">
+                              {walletData.trustLines.map((line, idx) => {
+                                const displayCurrency = line.currency.length === 40 
+                                  ? hexToString(line.currency) 
+                                  : line.currency;
+                                const balance = parseFloat(line.balance);
+                                const isCurrentToken = 
+                                  line.currency === token.currency && 
+                                  line.account === token.issuer;
+                                
+                                return (
+                                  <div 
+                                    key={`${line.currency}-${line.account}-${idx}`}
+                                    className={`p-3 hover:bg-accent/20 transition-colors ${
+                                      isCurrentToken ? 'bg-chart-1/10 border-l-2 border-chart-1' : ''
+                                    }`}
+                                  >
+                                    <div className="flex items-start justify-between gap-3">
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <p className="font-semibold text-sm">
+                                            {displayCurrency}
+                                          </p>
+                                          {isCurrentToken && (
+                                            <Badge variant="default" className="text-xs">
+                                              Current Token
+                                            </Badge>
+                                          )}
+                                        </div>
+                                        <p className="text-xs text-muted-foreground font-mono truncate">
+                                          Issuer: {line.account}
+                                        </p>
+                                        {line.currency.length === 40 && (
+                                          <p className="text-xs text-muted-foreground font-mono mt-1 truncate">
+                                            Hex: {line.currency}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <div className="text-right">
+                                        <p className="text-lg font-bold">
+                                          {balance.toFixed(2)}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                          Balance
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      </CollapsibleContent>
+                    </div>
+                  </Collapsible>
+                );
+              })}
+            </div>
+          )}
+
+          {trustLinesErrors.length > 0 && walletTrustLines.length > 0 && (
+            <Alert variant="destructive" className="mt-3">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <p className="text-sm mb-1">Some wallets failed to load trust lines:</p>
+                <ul className="text-xs space-y-1">
+                  {trustLinesErrors.map((err, idx) => (
+                    <li key={idx}>• {err.wallet}: {err.error}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
           )}
         </div>
       </CardContent>

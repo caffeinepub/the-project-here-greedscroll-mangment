@@ -1,89 +1,52 @@
 {
   "kind": "build_request",
-  "title": "Add token whitelist configuration interface",
-  "projectName": "XRP Portfolio Monitor",
-  "priority": "high",
+  "title": "Remove AMONGSTT token from whitelist",
+  "projectName": "XRPL Token Monitor",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-13",
-      "text": "Create a token configuration interface in the frontend that allows the user to specify which tokens to monitor by entering token currency codes and issuer addresses, with the ability to add, edit, and remove tokens from the monitoring list",
+      "id": "REQ-38",
+      "text": "Remove AMONGSTT token entry from the DEFAULT_TOKENS array in frontend/src/lib/tokenConfig.ts, keeping the remaining 10 tokens (JewNomicaN, GreedyJEW, HEBROID, ASC, RPR, PLR, ARK, Schmeckles, MKS, TriForce, DeerChickenn) intact",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-final"
+          "msg-last"
         ],
         "quotes": [
-          "let me list tokens to monitor on our app"
+          "remove Amongstt"
         ]
       },
       "acceptanceCriteria": [
-        "User can add new tokens by entering currency code and issuer address",
-        "User can remove tokens from the monitoring list",
-        "User can edit existing token entries",
-        "Configuration persists between sessions",
-        "Invalid XRPL addresses are rejected with clear error messages"
+        "AMONGSTT token is no longer present in DEFAULT_TOKENS array",
+        "All other 10 tokens remain in the whitelist unchanged",
+        "Token configuration loads correctly without AMONGSTT"
       ]
     },
     {
-      "id": "REQ-14",
-      "text": "Update frontend/src/components/TokenList.tsx to filter trust line data based on the user-configured token whitelist, displaying only tokens that match the specified currency codes and issuer addresses instead of showing all trust lines from the monitored wallets",
+      "id": "REQ-39",
+      "text": "Verify that any existing localStorage token configurations containing AMONGSTT are handled gracefully, allowing users who previously added AMONGSTT to continue seeing it until they manually remove it from their custom configuration",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-final"
-        ],
-        "quotes": [
-          "let me list tokens to monitor on our app"
+          "msg-last"
         ]
       },
       "acceptanceCriteria": [
-        "Only whitelisted tokens appear in the token list",
-        "Trust lines not matching the whitelist are excluded from display",
-        "Empty state shown when no whitelisted tokens are found",
-        "Filter applies to both issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx)"
-      ]
-    },
-    {
-      "id": "REQ-15",
-      "text": "Pre-populate the token configuration with GreedyJEW (currency code to be determined from XRPL data, issuer rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and Jewnomican (currency code to be determined from XRPL data, issuer rEz5RdLqRex7YxYZ1bEskCDHbvKy3zcUnq) as the default monitored tokens",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-final"
-        ]
-      },
-      "acceptanceCriteria": [
-        "GreedyJEW token with issuer rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 appears in default configuration",
-        "Jewnomican token with issuer rEz5RdLqRex7YxYZ1bEskCDHbvKy3zcUnq appears in default configuration",
-        "User can modify or remove these default entries"
-      ]
-    },
-    {
-      "id": "REQ-16",
-      "text": "Add a navigation option or settings button to access the token configuration interface from the main dashboard",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-final"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Settings button or menu item is visible on the dashboard",
-        "Clicking the button opens the token configuration interface",
-        "User can return to the main dashboard view after configuring tokens"
+        "Existing localStorage configurations with AMONGSTT continue to work",
+        "No errors occur when loading saved configurations that include AMONGSTT",
+        "Users can manually remove AMONGSTT through the token configuration interface if desired"
       ]
     }
   ],
   "constraints": [
-    "Do not modify backend/main.mo as no backend logic is required for this feature",
-    "Token configuration must use localStorage or similar client-side storage",
-    "Must maintain compatibility with existing wallet monitoring for rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 and rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx"
+    "Do not modify any token entries other than AMONGSTT",
+    "Do not change the token configuration persistence logic",
+    "Maintain backward compatibility with existing localStorage data"
   ],
   "nonGoals": [
-    "Backend storage of token configuration",
-    "Multi-user token configuration management",
-    "Automatic token discovery or suggestions",
-    "Integration with external token registries"
+    "Forcing removal of AMONGSTT from user's custom token lists",
+    "Changing the arbitrage comparison logic or UI",
+    "Modifying any other token properties or issuer addresses"
   ],
   "imageRequirements": {
     "required": [],
