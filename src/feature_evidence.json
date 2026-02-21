@@ -2,8 +2,29 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-replace-the-monitored-wallet-addresses-in-frontend-src-components-tokenlist-tsx-with-the-greedyjew-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-the-project-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx",
-      "featureTitle": "Replace the monitored wallet addresses in frontend/src/components/TokenList.tsx with the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and the project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx)",
+      "featureId": "feature-create-a-token-configuration-interface-in-the-frontend-that-allows-the-user-to-specify-which-tokens-to-monitor-by-entering-token-currency-codes-and-issuer-addresses-with-the-ability-to-add-edit-and-remove-tokens-from-the-monitoring-list",
+      "featureTitle": "Create a token configuration interface in the frontend that allows the user to specify which tokens to monitor by entering token currency codes and issuer addresses, with the ability to add, edit, and remove tokens from the monitoring list",
+      "files": [
+        "frontend/src/components/TokenConfigDialog.tsx",
+        "frontend/src/lib/tokenConfig.ts",
+        "frontend/src/pages/Dashboard.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-13"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-frontend-src-components-tokenlist-tsx-to-filter-trust-line-data-based-on-the-user-configured-token-whitelist-displaying-only-tokens-that-match-the-specified-currency-codes-and-issuer-addresses-instead-of-showing-all-trust-lines-from-the-monitored-wallets",
+      "featureTitle": "Update frontend/src/components/TokenList.tsx to filter trust line data based on the user-configured token whitelist, displaying only tokens that match the specified currency codes and issuer addresses instead of showing all trust lines from the monitored wallets",
       "files": [
         "frontend/src/components/TokenList.tsx"
       ],
@@ -16,15 +37,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-10"
+        "REQ-14"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-frontend-src-components-tokenmetrics-tsx-to-fetch-token-holdings-from-the-greedyjew-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-project-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx-when-displaying-token-detail-views",
-      "featureTitle": "Update frontend/src/components/TokenMetrics.tsx to fetch token holdings from the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) when displaying token detail views",
+      "featureId": "feature-pre-populate-the-token-configuration-with-greedyjew-currency-code-to-be-determined-from-xrpl-data-issuer-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-jewnomican-currency-code-to-be-determined-from-xrpl-data-issuer-rez5rdlqrex7yxyz1beskcdhbvky3zcunq-as-the-default-monitored-tokens",
+      "featureTitle": "Pre-populate the token configuration with GreedyJEW (currency code to be determined from XRPL data, issuer rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and Jewnomican (currency code to be determined from XRPL data, issuer rEz5RdLqRex7YxYZ1bEskCDHbvKy3zcUnq) as the default monitored tokens",
       "files": [
-        "frontend/src/components/TokenMetrics.tsx"
+        "frontend/src/lib/tokenConfig.ts"
       ],
       "components": [
         "http-outcalls@3.0.0",
@@ -35,15 +56,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-11"
+        "REQ-15"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-frontend-src-components-walletholdings-tsx-to-support-viewing-detailed-holdings-for-both-the-greedyjew-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-project-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx-with-proper-wallet-identification-in-the-ui",
-      "featureTitle": "Update frontend/src/components/WalletHoldings.tsx to support viewing detailed holdings for both the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) with proper wallet identification in the UI",
+      "featureId": "feature-add-a-navigation-option-or-settings-button-to-access-the-token-configuration-interface-from-the-main-dashboard",
+      "featureTitle": "Add a navigation option or settings button to access the token configuration interface from the main dashboard",
       "files": [
-        "frontend/src/components/WalletHoldings.tsx"
+        "frontend/src/pages/Dashboard.tsx"
       ],
       "components": [
         "http-outcalls@3.0.0",
@@ -54,7 +75,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-12"
+        "REQ-16"
       ],
       "confidence": "high"
     }

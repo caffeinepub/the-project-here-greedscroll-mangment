@@ -7,9 +7,11 @@ import { AlertCircle, TrendingUp, Coins, AlertTriangle, RefreshCw } from 'lucide
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Token } from '@/pages/Dashboard';
 import { fetchAccountLines, validateXRPLAddress } from '@/lib/xrpl';
+import { loadTokenConfig, isTokenWhitelisted } from '@/lib/tokenConfig';
 
 interface TokenListProps {
   onTokenSelect: (token: Token) => void;
+  refreshTrigger?: number;
 }
 
 const WALLETS = [
@@ -23,7 +25,7 @@ interface WalletError {
   error: string;
 }
 
-function TokenList({ onTokenSelect }: TokenListProps) {
+function TokenList({ onTokenSelect, refreshTrigger }: TokenListProps) {
   const [tokens, setTokens] = useState<Token[]>([]);
   const [loading, setLoading] = useState(true);
   const [walletErrors, setWalletErrors] = useState<WalletError[]>([]);
@@ -34,6 +36,10 @@ function TokenList({ onTokenSelect }: TokenListProps) {
     try {
       setLoading(true);
       setWalletErrors([]);
+      
+      // Load token whitelist
+      const tokenConfig = loadTokenConfig();
+      console.log('[TokenList] Loaded token whitelist:', tokenConfig);
       
       const allTokens: Token[] = [];
       const errors: WalletError[] = [];
@@ -63,7 +69,18 @@ function TokenList({ onTokenSelect }: TokenListProps) {
           const lines = await fetchAccountLines(wallet.address);
           console.log(`[TokenList] Retrieved ${lines.length} trust lines for ${wallet.name}`);
           
-          const tokensWithAccount: Token[] = lines.map(line => ({
+          // Filter trust lines based on whitelist
+          const filteredLines = lines.filter(line => {
+            const isWhitelisted = isTokenWhitelisted(line.currency, line.account);
+            if (!isWhitelisted) {
+              console.log(`[TokenList] Filtering out non-whitelisted token: ${line.currency} (${line.account})`);
+            }
+            return isWhitelisted;
+          });
+          
+          console.log(`[TokenList] ${filteredLines.length} tokens match whitelist for ${wallet.name}`);
+          
+          const tokensWithAccount: Token[] = filteredLines.map(line => ({
             currency: line.currency,
             issuer: line.account, // The 'account' field in trust line is the issuer
             balance: line.balance,
@@ -71,7 +88,6 @@ function TokenList({ onTokenSelect }: TokenListProps) {
             account: wallet.name
           }));
           
-          console.log(`[TokenList] Processed ${tokensWithAccount.length} tokens for ${wallet.name}`);
           allTokens.push(...tokensWithAccount);
         } catch (walletError) {
           const errorMsg = walletError instanceof Error ? walletError.message : 'Unknown error';
@@ -84,7 +100,7 @@ function TokenList({ onTokenSelect }: TokenListProps) {
         }
       }
       
-      console.log(`[TokenList] Total tokens loaded: ${allTokens.length}`);
+      console.log(`[TokenList] Total whitelisted tokens loaded: ${allTokens.length}`);
       setTokens(allTokens);
       setWalletErrors(errors);
     } catch (err) {
@@ -102,7 +118,7 @@ function TokenList({ onTokenSelect }: TokenListProps) {
 
   useEffect(() => {
     loadTokens();
-  }, []);
+  }, [refreshTrigger]);
 
   if (loading) {
     return (
@@ -180,11 +196,17 @@ function TokenList({ onTokenSelect }: TokenListProps) {
           Token Portfolio
         </CardTitle>
         <CardDescription>
-          Tracking {tokens.length} tokens across {WALLETS.length} wallets
-          {walletErrors.length > 0 && (
-            <span className="text-destructive ml-2">
-              ({walletErrors.length} wallet{walletErrors.length > 1 ? 's' : ''} failed)
-            </span>
+          {tokens.length > 0 ? (
+            <>
+              Tracking {tokens.length} token{tokens.length !== 1 ? 's' : ''} across {WALLETS.length} wallets
+              {walletErrors.length > 0 && (
+                <span className="text-destructive ml-2">
+                  ({walletErrors.length} wallet{walletErrors.length > 1 ? 's' : ''} failed)
+                </span>
+              )}
+            </>
+          ) : (
+            'No whitelisted tokens found'
           )}
         </CardDescription>
       </CardHeader>
@@ -215,21 +237,20 @@ function TokenList({ onTokenSelect }: TokenListProps) {
           </Alert>
         )}
         
-        {tokens.length === 0 && (
+        {tokens.length === 0 && walletErrors.length === 0 && (
           <Alert className="mb-4">
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>No Tokens Found</AlertTitle>
+            <AlertTitle>No Whitelisted Tokens Found</AlertTitle>
             <AlertDescription>
-              <p className="mb-2">The configured wallets don't have any trust lines set up.</p>
+              <p className="mb-2">
+                The monitored wallets don't have any trust lines matching your configured tokens.
+              </p>
               <div className="mt-3 p-3 bg-muted rounded-md text-sm">
-                <p className="font-semibold mb-1">Current wallet addresses:</p>
-                <ul className="space-y-1 font-mono text-xs">
-                  {WALLETS.map(w => (
-                    <li key={w.address} className={!validateXRPLAddress(w.address) ? 'text-destructive' : ''}>
-                      • {w.name}: {w.address}
-                      {!validateXRPLAddress(w.address) && ' ⚠ INVALID'}
-                    </li>
-                  ))}
+                <p className="font-semibold mb-2">What to do:</p>
+                <ul className="space-y-1 list-disc list-inside">
+                  <li>Click the Settings button in the header to manage your token whitelist</li>
+                  <li>Add the currency codes and issuer addresses of tokens you want to monitor</li>
+                  <li>Make sure the tokens have trust lines set up in the monitored wallets</li>
                 </ul>
               </div>
             </AlertDescription>

@@ -1,13 +1,14 @@
-import { Wallet, Moon, Sun, Rocket } from 'lucide-react';
+import { Wallet, Moon, Sun, Rocket, Settings } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
   onPublish?: () => void;
   isPublishing?: boolean;
+  onOpenSettings?: () => void;
 }
 
-function Header({ onPublish, isPublishing = false }: HeaderProps) {
+function Header({ onPublish, isPublishing = false, onOpenSettings }: HeaderProps) {
   const { theme, setTheme } = useTheme();
 
   return (
@@ -25,6 +26,19 @@ function Header({ onPublish, isPublishing = false }: HeaderProps) {
           </div>
 
           <div className="flex items-center gap-2">
+            {onOpenSettings && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={onOpenSettings}
+                className="rounded-full"
+                title="Token Configuration"
+              >
+                <Settings className="h-5 w-5" />
+                <span className="sr-only">Token Configuration</span>
+              </Button>
+            )}
+            
             {onPublish && (
               <Button
                 onClick={onPublish}

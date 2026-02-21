@@ -1,14 +1,17 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 11,
+  "projectStateVersion": 13,
   "summary": "Multi-chain monitoring app for XRP Ledger projects tracking greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) with drill-down interface: token list → token metrics → wallet holdings (Xaman-style data) → NFT viewer tab, using XRPL native DEX data and public APIs",
   "architectural_notes": [
     "Use XRPL native DEX data and public APIs",
     "Match Xaman wallet data display format",
     "Multi-chain monitoring architecture for XRP Ledger projects",
-    "Monitor two wallets: issuer wallet rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 (GreedyJEW token issuer) and dev wallet rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx (project development wallet)"
+    "Monitor two wallets: issuer wallet rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 (GreedyJEW token issuer) and dev wallet rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx (project development wallet)",
+    "Filter displayed tokens to only those explicitly configured in whitelist, not all trust lines from monitored wallets"
   ],
-  "known_issues": [],
+  "known_issues": [
+    "Dashboard currently shows all 210+ trust lines from monitored wallets instead of just the specific tokens user wants to track"
+  ],
   "isFixRequest": true,
   "existing_features": [
     {
@@ -98,6 +101,38 @@
         "REQ-12"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-create-a-token-configuration-interface-in-the-frontend-that-allows-the-user-to-specify-which-tokens-to-monitor-by-entering-token-currency-codes-and-issuer-addresses-with-the-ability-to-add-edit-and-remove-tokens-from-the-monitoring-list",
+      "title": "Create a token configuration interface in the frontend that allows the user to specify which tokens to monitor by entering token currency codes and issuer addresses, with the ability to add, edit, and remove tokens from the monitoring list",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-components-tokenlist-tsx-to-filter-trust-line-data-based-on-the-user-configured-token-whitelist-displaying-only-tokens-that-match-the-specified-currency-codes-and-issuer-addresses-instead-of-showing-all-trust-lines-from-the-monitored-wallets",
+      "title": "Update frontend/src/components/TokenList.tsx to filter trust line data based on the user-configured token whitelist, displaying only tokens that match the specified currency codes and issuer addresses instead of showing all trust lines from the monitored wallets",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-pre-populate-the-token-configuration-with-greedyjew-currency-code-to-be-determined-from-xrpl-data-issuer-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-jewnomican-currency-code-to-be-determined-from-xrpl-data-issuer-rez5rdlqrex7yxyz1beskcdhbvky3zcunq-as-the-default-monitored-tokens",
+      "title": "Pre-populate the token configuration with GreedyJEW (currency code to be determined from XRPL data, issuer rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and Jewnomican (currency code to be determined from XRPL data, issuer rEz5RdLqRex7YxYZ1bEskCDHbvKy3zcUnq) as the default monitored tokens",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-navigation-option-or-settings-button-to-access-the-token-configuration-interface-from-the-main-dashboard",
+      "title": "Add a navigation option or settings button to access the token configuration interface from the main dashboard",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -137,6 +172,12 @@
       "reqIds": [
         "REQ-1"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Add token whitelist/configuration interface to specify which tokens to monitor instead of displaying all trust lines",
+      "reqIds": [],
       "status": "pending"
     }
   ],
