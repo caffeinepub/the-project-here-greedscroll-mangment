@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 11,
+  "summary": "Multi-chain monitoring app for XRP Ledger projects tracking greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) with drill-down interface: token list → token metrics → wallet holdings (Xaman-style data) → NFT viewer tab, using XRPL native DEX data and public APIs",
+  "architectural_notes": [
+    "Use XRPL native DEX data and public APIs",
+    "Match Xaman wallet data display format",
+    "Multi-chain monitoring architecture for XRP Ledger projects",
+    "Monitor two wallets: issuer wallet rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 (GreedyJEW token issuer) and dev wallet rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx (project development wallet)"
+  ],
+  "known_issues": [],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-debug-and-fix-the-data-fetching-functionality-so-the-dashboard-displays-wallet-data-for-greedyjew-and-hebroid-wallets-verify-xrpl-api-requests-are-executing-correctly-and-data-is-being-returned-from-the-public-ripple-server",
+      "title": "Debug and fix the data fetching functionality so the dashboard displays wallet data for greedyjew and Hebroid wallets. Verify XRPL API requests are executing correctly and data is being returned from the public Ripple server.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-tokenlist-component-correctly-fetches-and-displays-trust-line-data-from-both-monitored-wallets-with-proper-error-handling-and-loading-states",
+      "title": "Ensure the TokenList component correctly fetches and displays trust line data from both monitored wallets with proper error handling and loading states.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-the-xrpl-client-library-functions-getaccountinfo-gettrustlines-getaccountnfts-are-properly-handling-responses-and-returning-data-in-the-expected-format-for-the-components",
+      "title": "Verify the XRPL client library functions (getAccountInfo, getTrustLines, getAccountNFTs) are properly handling responses and returning data in the expected format for the components.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-publish-button-to-the-dashboard-header-that-allows-the-user-to-deploy-the-current-application-version",
+      "title": "Add a 'Publish' button to the Dashboard header that allows the user to deploy the current application version",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-xrpl-client-connection-in-frontend-src-lib-xrpl-ts-to-use-a-reliable-public-xrpl-server-endpoint-such-as-wss-xrplcluster-com-or-wss-s1-ripple-com-and-implement-proper-connection-error-handling-with-retry-logic",
+      "title": "Update the XRPL client connection in frontend/src/lib/xrpl.ts to use a reliable public XRPL server endpoint (such as wss://xrplcluster.com or wss://s1.ripple.com) and implement proper connection error handling with retry logic",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-validate-that-the-wallet-addresses-greedyjew-and-hebroid-in-frontend-src-components-tokenlist-tsx-are-correctly-formatted-xrpl-addresses-starting-with-r-and-25-35-characters-long-and-if-they-are-usernames-or-identifiers-instead-replace-them-with-valid-xrpl-classic-addresses",
+      "title": "Validate that the wallet addresses 'greedyjew' and 'Hebroid' in frontend/src/components/TokenList.tsx are correctly formatted XRPL addresses (starting with 'r' and 25-35 characters long), and if they are usernames or identifiers instead, replace them with valid XRPL classic addresses",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-detailed-error-logging-in-frontend-src-lib-xrpl-ts-for-all-api-calls-getaccountinfo-gettrustlines-getaccountnfts-that-captures-the-full-error-response-request-parameters-and-network-status-to-help-diagnose-fetch-failures",
+      "title": "Add detailed error logging in frontend/src/lib/xrpl.ts for all API calls (getAccountInfo, getTrustLines, getAccountNFTs) that captures the full error response, request parameters, and network status to help diagnose fetch failures",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-user-friendly-error-state-in-frontend-src-components-tokenlist-tsx-that-displays-specific-troubleshooting-guidance-when-wallet-data-fails-to-load-including-checking-wallet-addresses-verifying-server-connectivity-and-viewing-console-logs",
+      "title": "Implement a user-friendly error state in frontend/src/components/TokenList.tsx that displays specific troubleshooting guidance when wallet data fails to load, including checking wallet addresses, verifying server connectivity, and viewing console logs",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-monitored-wallet-addresses-in-frontend-src-components-tokenlist-tsx-with-the-greedyjew-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-the-project-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx",
+      "title": "Replace the monitored wallet addresses in frontend/src/components/TokenList.tsx with the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and the project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx)",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-components-tokenmetrics-tsx-to-fetch-token-holdings-from-the-greedyjew-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-project-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx-when-displaying-token-detail-views",
+      "title": "Update frontend/src/components/TokenMetrics.tsx to fetch token holdings from the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) when displaying token detail views",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-components-walletholdings-tsx-to-support-viewing-detailed-holdings-for-both-the-greedyjew-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-project-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx-with-proper-wallet-identification-in-the-ui",
+      "title": "Update frontend/src/components/WalletHoldings.tsx to support viewing detailed holdings for both the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) with proper wallet identification in the UI",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Token list view with drill-down navigation",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Token metrics detail view",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Wallet holdings view using Xaman-style data from XRPL APIs",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "NFT viewer tab",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Track greedyjew and Hebroid wallets",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Use the same XRPL native DEX data and public APIs as previously specified for tracking greedyjew and Hebroid wallets",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    }
+  ],
+  "projectName": "XRP Portfolio Monitor",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

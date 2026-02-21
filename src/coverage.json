@@ -1,0 +1,61 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-21T04:25:01.754Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 3,
+    "implemented": 3,
+    "items": [
+      {
+        "id": "REQ-10",
+        "summary": "Replace the monitored wallet addresses in frontend/src/components/TokenList.tsx with the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and the project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx)",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/TokenList.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/TokenList.tsx"
+        ]
+      },
+      {
+        "id": "REQ-11",
+        "summary": "Update frontend/src/components/TokenMetrics.tsx to fetch token holdings from the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) when displaying token detail views",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/TokenMetrics.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/TokenMetrics.tsx"
+        ]
+      },
+      {
+        "id": "REQ-12",
+        "summary": "Update frontend/src/components/WalletHoldings.tsx to support viewing detailed holdings for both the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) with proper wallet identification in the UI",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/WalletHoldings.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/WalletHoldings.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/components/TokenList.tsx",
+    "frontend/src/components/TokenMetrics.tsx",
+    "frontend/src/components/WalletHoldings.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

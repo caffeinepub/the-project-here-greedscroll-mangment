@@ -1,0 +1,13 @@
+{
+  "frontend/src/App.tsx": "Main application component that wraps the dashboard with QueryClient and ThemeProvider for dark/light mode support.",
+  "frontend/src/pages/Dashboard.tsx": "Core dashboard page managing navigation state between token list, token metrics, and wallet holdings views with integrated publish functionality and toast notifications.",
+  "frontend/src/components/Header.tsx": "Application header with branding, theme toggle, and publish button that accepts onPublish callback and isPublishing state for deployment functionality.",
+  "frontend/src/components/Footer.tsx": "Footer component with copyright information and attribution link to caffeine.ai with UTM tracking.",
+  "frontend/src/components/TokenList.tsx": "Token portfolio component displaying trust lines from GreedyJEW Issuer and Project Dev Wallet with per-wallet error tracking, address validation, retry functionality, and detailed error messages.",
+  "frontend/src/components/TokenMetrics.tsx": "Token metrics detail view showing holdings breakdown across GreedyJEW Issuer and Project Dev Wallet with per-wallet error handling, retry buttons, and partial data display when some wallets fail.",
+  "frontend/src/components/WalletHoldings.tsx": "Comprehensive wallet view with automatic wallet identification (displays \"GreedyJEW Issuer\" or \"Project Dev Wallet\" labels), address validation, enhanced error display, and detailed troubleshooting guidance for both monitored wallets.",
+  "frontend/src/lib/xrpl.ts": "XRPL API client with multiple server fallback, retry logic with exponential backoff, comprehensive error logging, address validation, and detailed console output for debugging network and API issues.",
+  "frontend/src/index.css": "Global styles with OKLCH color system featuring purple/blue gradient theme optimized for both light and dark modes.",
+  "frontend/tailwind.config.js": "Tailwind configuration with custom color tokens, Inter and JetBrains Mono fonts, and extended design system.",
+  "frontend/src/hooks/useQueries.ts": "Empty placeholder file as all data fetching is handled directly via XRPL client functions."
+}

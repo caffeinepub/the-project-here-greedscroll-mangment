@@ -1,0 +1,22 @@
+{
+  "backend/main.mo": "Empty Motoko actor file serving as the backend entry point with no implemented functionality.",
+  "feature_evidence.json": "Feature evidence report documenting three features for updating wallet addresses in TokenList, TokenMetrics, and WalletHoldings components to monitor GreedyJEW issuer and project dev wallets.",
+  "frontend-file-summaries.txt": "JSON-formatted summaries of all frontend files describing their roles in the XRP portfolio monitoring application with XRPL integration and wallet tracking.",
+  "frontend/index.css": "Tailwind CSS configuration with OKLCH color system defining light and dark theme variables for the application's design system.",
+  "frontend/index.html": "HTML entry point for the React application with root div and module script reference to main.tsx.",
+  "frontend/src/App.tsx": "Root React component wrapping Dashboard with QueryClient for data fetching, ThemeProvider for dark/light mode, and Toaster for notifications.",
+  "frontend/src/components/Footer.tsx": "Footer component displaying copyright information and attribution link to caffeine.ai with UTM tracking parameters.",
+  "frontend/src/components/Header.tsx": "Application header with branding, theme toggle button, and optional publish button with loading state support.",
+  "frontend/src/components/TokenList.tsx": "Component displaying token portfolio from GreedyJEW Issuer and Project Dev Wallet with per-wallet error tracking, address validation, and retry functionality.",
+  "frontend/src/components/TokenMetrics.tsx": "Token detail view showing holdings breakdown across monitored wallets with per-wallet error handling and retry buttons for failed requests.",
+  "frontend/src/components/WalletHoldings.tsx": "Comprehensive wallet view with automatic wallet identification, address validation, tabbed interface for overview/tokens/NFTs, and detailed error messages with troubleshooting guidance.",
+  "frontend/src/hooks/useActor.ts": "React hook that creates and manages an ICP backend actor using Internet Identity authentication, automatically invalidating and refetching dependent queries when the actor changes.",
+  "frontend/src/hooks/useInternetIdentity.ts": "Provides Internet Identity authentication context and hooks for ICP, managing login/logout state, identity persistence, and delegation validation with configurable AuthClient options.",
+  "frontend/src/hooks/useQueries.ts": "Empty placeholder file indicating that data fetching is handled directly in components using XRPL client library functions instead of backend actor queries.",
+  "frontend/src/index.css": "Tailwind CSS configuration with custom CSS variables defining a comprehensive design system including light/dark themes, color palettes using OKLCH color space, and sidebar styling.",
+  "frontend/src/lib/xrpl.ts": "XRPL client library providing functions to interact with XRP Ledger servers, including account info retrieval, trust line queries, NFT data fetching, address validation, and automatic retry/failover logic across multiple public servers.",
+  "frontend/src/main.tsx": "Application entry point that sets up React root with QueryClient for data fetching and InternetIdentityProvider for ICP authentication context.",
+  "frontend/src/pages/Dashboard.tsx": "Main dashboard page component managing three view states (tokens, metrics, holdings) with navigation between token lists, token metrics, and wallet holdings, plus a publish functionality.",
+  "frontend/tailwind.config.js": "Tailwind CSS configuration defining custom theme extensions including OKLCH color system, container settings, animations, border radius variables, and typography/container query plugins.",
+  "project_state.json": "Project state file tracking an XRP Ledger multi-chain monitoring dashboard that displays token and NFT data for two wallets (issuer rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 and dev rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx). Contains architectural notes, existing features for debugging data fetching, XRPL client connections, wallet validation, and error handling improvements."
+}

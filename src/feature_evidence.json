@@ -1,0 +1,62 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-replace-the-monitored-wallet-addresses-in-frontend-src-components-tokenlist-tsx-with-the-greedyjew-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-the-project-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx",
+      "featureTitle": "Replace the monitored wallet addresses in frontend/src/components/TokenList.tsx with the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and the project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx)",
+      "files": [
+        "frontend/src/components/TokenList.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-10"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-frontend-src-components-tokenmetrics-tsx-to-fetch-token-holdings-from-the-greedyjew-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-project-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx-when-displaying-token-detail-views",
+      "featureTitle": "Update frontend/src/components/TokenMetrics.tsx to fetch token holdings from the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) when displaying token detail views",
+      "files": [
+        "frontend/src/components/TokenMetrics.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-11"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-frontend-src-components-walletholdings-tsx-to-support-viewing-detailed-holdings-for-both-the-greedyjew-issuer-wallet-rdrvw4pkmetsnz3cjxbl6hljjmejtkoq4-and-project-dev-wallet-rw3dpxgusrrvdsbxsjhdxd14ogknidttrx-with-proper-wallet-identification-in-the-ui",
+      "featureTitle": "Update frontend/src/components/WalletHoldings.tsx to support viewing detailed holdings for both the greedyjew issuer wallet (rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4) and project dev wallet (rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx) with proper wallet identification in the UI",
+      "files": [
+        "frontend/src/components/WalletHoldings.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-12"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

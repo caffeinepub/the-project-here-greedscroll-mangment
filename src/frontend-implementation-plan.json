@@ -1,0 +1,57 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Update monitored wallets to track greedyjew issuer and project dev wallet",
+  "requirements": [
+    {
+      "id": "REQ-10",
+      "summary": "Replace monitored wallet addresses in TokenList with greedyjew issuer wallet and project dev wallet",
+      "acceptanceCriteria": [
+        "TokenList component displays data for wallet rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 labeled as 'GreedyJEW Issuer'",
+        "TokenList component displays data for wallet rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx labeled as 'Project Dev Wallet'",
+        "Both wallets show trust lines, balances, and holdings correctly",
+        "Previous wallet addresses (greedyjew and Hebroid placeholders) are completely removed"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/TokenList.tsx",
+          "operation": "modify",
+          "description": "Update the walletAddresses array to replace existing placeholder addresses with rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 (labeled 'GreedyJEW Issuer') and rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx (labeled 'Project Dev Wallet'). Ensure the component's state management, error tracking per wallet, and retry logic continue to work with these new addresses. Remove all previous wallet address entries."
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Update TokenMetrics to fetch token holdings from greedyjew issuer and project dev wallets",
+      "acceptanceCriteria": [
+        "TokenMetrics component queries both wallets for token holdings",
+        "Token detail view shows holdings from issuer wallet and dev wallet separately",
+        "Per-wallet error handling and retry logic works for both addresses"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/TokenMetrics.tsx",
+          "operation": "modify",
+          "description": "Update the walletAddresses array to use rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 (labeled 'GreedyJEW Issuer') and rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx (labeled 'Project Dev Wallet') when fetching token holdings for the detail view. Maintain the existing per-wallet error handling, retry buttons, and partial data display logic. Ensure wallet labels are displayed clearly in the holdings breakdown."
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Update WalletHoldings to support viewing detailed holdings for both issuer and dev wallets with proper identification",
+      "acceptanceCriteria": [
+        "WalletHoldings component accepts either wallet address as input",
+        "UI clearly identifies which wallet is being displayed (Issuer vs Dev Wallet)",
+        "XRP balance, trust lines, and NFTs load correctly for both addresses",
+        "Address validation and error handling work for both wallets"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/WalletHoldings.tsx",
+          "operation": "modify",
+          "description": "Add wallet identification logic that displays 'GreedyJEW Issuer' when the address is rdRvw4pKmEtSnz3cjXBL6HLJJmejtkoQ4 and 'Project Dev Wallet' when the address is rw3DPxgusRrvdsbXSjHdXD14ogkNidTTRx. Update the component header or title to show this label alongside or instead of the raw address. Ensure address validation, error handling, and data fetching for XRP balance, trust lines, and NFTs continue to work correctly for both wallet addresses."
+        }
+      ]
+    }
+  ]
+}
